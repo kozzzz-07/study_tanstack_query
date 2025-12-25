@@ -1,1 +1,10 @@
-@import "kiso.css"
+@import "kiso.css";
+
+body {
+  background-color: ghostwhite;
+  color: #333;
+  min-height: 100vh;
+  display: block grid;
+  place-content: center;
+  padding: 2rem;
+}
