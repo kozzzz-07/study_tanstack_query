@@ -7,6 +7,7 @@ import {
   followGithubUser,
   unfollowGithubUser,
 } from "../../api/git-hub";
+import { toast } from "sonner";
 
 export function UserCard({ user }: { user: GitHubUser }) {
   const { data: isFollowing, refetch } = useQuery({
@@ -18,22 +19,22 @@ export function UserCard({ user }: { user: GitHubUser }) {
   const followMutation = useMutation({
     mutationFn: () => followGithubUser(user.login),
     onSuccess: () => {
-      console.log(`You are now following ${user.login}`);
+      toast.success(`You are now following ${user.login}`);
       refetch();
     },
     onError: (err) => {
-      console.error(err.message);
+      toast.error(err.message);
     },
   });
 
   const unfollowMutation = useMutation({
     mutationFn: () => unfollowGithubUser(user.login),
     onSuccess: () => {
-      console.log(`You are no longer following ${user.login}`);
+      toast.success(`You are no longer following ${user.login}`);
       refetch();
     },
     onError: (err) => {
-      console.error(err.message);
+      toast.error(err.message);
     },
   });
 
