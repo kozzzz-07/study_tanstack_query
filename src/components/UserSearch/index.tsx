@@ -7,7 +7,7 @@ import { UserCard } from "../UserCard";
 import { RecentSearches } from "../RecentSearches";
 import { getLSRecentUsers, setLSRecentUsers } from "../../utils/localstorage";
 import { useDebounce } from "use-debounce";
-import type { GitHubUser } from "../../types";
+import { SuggestionDropdown } from "../SuggestionDropdown";
 
 export function UserSearch() {
   const [userName, setUserName] = useState("");
@@ -65,29 +65,26 @@ export function UserSearch() {
           }}
         />
         {showSuggestions && suggestions?.length > 0 && (
-          <ul className="suggestions">
-            {suggestions.slice(0, 5).map((user: GitHubUser) => (
-              <li
-                key={user.login}
-                onClick={() => {
-                  setUserName(user.login);
-                  setShowSuggestions(false);
-                  if (submittedUserName !== user.login) {
-                    setSubmittedUserName(user.login);
-                  } else {
-                    refetch();
-                  }
-                }}
-              >
-                <img
-                  src={user.avatar_url}
-                  alt={user.login}
-                  className="avatar-xs"
-                />
-                {user.login}
-              </li>
-            ))}
-          </ul>
+          <SuggestionDropdown
+            suggestions={suggestions}
+            show={showSuggestions}
+            onSelect={(selected) => {
+              setUserName(selected);
+              setShowSuggestions(false);
+              if (submittedUserName !== selected) {
+                setSubmittedUserName(selected);
+              } else {
+                refetch();
+              }
+              setRecentUsers((prev) => {
+                const updated = [
+                  selected,
+                  ...prev.filter((u) => u !== selected),
+                ];
+                return updated.slice(0, 5);
+              });
+            }}
+          />
         )}
       </div>
 
