@@ -1,15 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import "./UserSearch.css";
 
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { fetchGithubUser } from "../../api/git-hub";
 import { UserCard } from "../UserCard";
 import { RecentSearches } from "../RecentSearches";
+import { getLSRecentUsers, setLSRecentUsers } from "../../utils/localstorage";
 
 export function UserSearch() {
   const [userName, setUserName] = useState("");
   const [submittedUserName, setSubmittedUserName] = useState("");
-  const [recentUsers, setRecentUsers] = useState<string[]>([]);
+  const [recentUsers, setRecentUsers] = useState<string[]>(() =>
+    getLSRecentUsers()
+  );
+
+  useEffect(() => {
+    setLSRecentUsers(recentUsers);
+  }, [recentUsers]);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["users", submittedUserName],
